@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Copy, ExternalLink, Link2, LoaderCircle, RefreshCw, Share2, Trash2 } from "lucide-react";
+import { ArrowRight, Check, Copy, ExternalLink, Link2, LoaderCircle, RefreshCw, Share2, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -56,7 +56,6 @@ export const ShareMemoDialog = ({
   onOpenChange: (open: boolean) => void;
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
@@ -259,8 +258,11 @@ export const ShareMemoDialog = ({
         </div>
         {location.pathname !== "/settings" ? (
           <div className="border-t border-slate-200 px-5 py-3">
-            <Button variant="ghost" className="w-full" onClick={() => navigate("/settings?tab=sharing")}>
-              {t("sharing.viewAll")}
+            <Button asChild variant="outline" className="w-full justify-between">
+              <Link to="/settings?tab=sharing">
+                {t("sharing.viewAll")}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </Button>
           </div>
         ) : null}
