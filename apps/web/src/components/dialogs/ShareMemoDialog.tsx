@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, Copy, ExternalLink, Link2, LoaderCircle, RefreshCw, Share2, Trash2 } from "lucide-react";
+import { Check, Copy, ExternalLink, Link2, LoaderCircle, RefreshCw, Share2, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
@@ -257,13 +257,13 @@ export const ShareMemoDialog = ({
           {error ? <p className="text-xs leading-5 text-rose-600" role="alert">{t("sharing.error")}</p> : null}
         </div>
         {location.pathname !== "/settings" ? (
-          <div className="border-t border-slate-200 px-5 py-3">
-            <Button asChild variant="outline" className="w-full justify-between">
-              <Link to="/settings?tab=sharing">
-                {t("sharing.viewAll")}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </Button>
+          <div className="border-t border-slate-200 px-5 py-3 text-center">
+            <Link
+              to="/settings?tab=sharing"
+              className="inline-flex items-center rounded-sm py-2 text-sm font-medium text-emerald-600 underline underline-offset-4 hover:text-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:text-emerald-400 dark:hover:text-emerald-300"
+            >
+              {t("sharing.viewAll")}
+            </Link>
           </div>
         ) : null}
       </DialogContent>
