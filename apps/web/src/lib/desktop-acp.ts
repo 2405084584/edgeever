@@ -37,6 +37,10 @@ export const displayedDesktopAcpAdapter = ({
   return checked ?? current;
 };
 
+export const desktopAcpSelectorVisible = (adapter: DesktopAcpAdapter, customPath: string) => (
+  adapter.state !== "not_installed" || (adapter.id === "antigravity" && Boolean(customPath.trim()))
+);
+
 export const desktopAcpAutomaticProbeInput = (adapter: DesktopAcpAdapter, customPath: string) => {
   if (adapter.state === "installing") return null;
   if (adapter.id === "antigravity" && customPath.trim()) return { id: adapter.id, path: customPath.trim() };

@@ -105,3 +105,16 @@ test("automatic checks skip missing, installing, ready and login-required agents
   expect(desktopAcpAutomaticProbeInput(antigravity, " /custom/agy ")).toEqual({ id: "antigravity", path: "/custom/agy" });
   expect(desktopAcpAutomaticProbeInput({ ...antigravity, state: "installing" }, "/custom/agy")).toBeNull();
 });
+
+test("the quick selector hides absent connectors while keeping detected agents and custom Antigravity paths", async () => {
+  const { desktopAcpSelectorVisible } = await import("./desktop-acp.ts");
+  const absent = { id: "claudeCode", label: "Claude Code", state: "not_installed" };
+  expect(desktopAcpSelectorVisible(absent, "")).toBe(false);
+  expect(desktopAcpSelectorVisible(absent, "/custom/agy")).toBe(false);
+  for (const state of ["not_probed", "installing", "needs_login", "available", "failed"]) {
+    expect(desktopAcpSelectorVisible({ ...absent, state }, "")).toBe(true);
+  }
+  const custom = { ...absent, id: "antigravity" };
+  expect(desktopAcpSelectorVisible(custom, " /custom/agy ")).toBe(true);
+  expect(desktopAcpSelectorVisible(custom, "  ")).toBe(false);
+});

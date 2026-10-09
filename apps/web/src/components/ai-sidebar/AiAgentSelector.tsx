@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/api";
 import {
-  AI_SIDEBAR_ADAPTER_PATH_KEY, desktopAcpAutomaticProbeInput,
+  AI_SIDEBAR_ADAPTER_PATH_KEY, desktopAcpAutomaticProbeInput, desktopAcpSelectorVisible,
   desktopAcpAvailable, listDesktopAcpAdapters, probeDesktopAcpAdapter, selectAiSidebarAgent,
   type AiSidebarSource, type DesktopAcpAdapterId,
 } from "@/lib/desktop-acp";
 import { aiErrorMessage, formatProviderOrdinal, isLegacyProviderDisplayName } from "../settings/ai-provider-options";
 import { resolveBuiltinAgentModel } from "./builtin-agent-model";
 
-export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, noteContext = false }: {
+export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }: {
   source: AiSidebarSource;
   adapterId: DesktopAcpAdapterId | null;
   disabled: boolean;
@@ -37,7 +37,7 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
     staleTime: 0,
   });
   const customPath = desktop && open ? window.localStorage.getItem(AI_SIDEBAR_ADAPTER_PATH_KEY) ?? "" : "";
-  const listedAgents = agents.data ?? [];
+  const listedAgents = (agents.data ?? []).filter((agent) => desktopAcpSelectorVisible(agent, customPath));
   const probeInputs = listedAgents.map((agent) => desktopAcpAutomaticProbeInput(agent, customPath));
   const probes = useQueries({
     queries: listedAgents.map((agent, index) => ({
@@ -80,7 +80,6 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
     ? (adapterId ? t(`aiAssistant.agentSource.${adapterId}`) : t("aiAssistant.agentSource.local"))
     : `${t("aiAssistant.agentSource.builtin")} · ${modelLabel}`;
   const buttonLabel = source === "local" ? label : builtin?.label ?? t("aiModel.noDefaultModel");
-  const localHint = t(noteContext ? "aiAssistant.agentSource.switchNoteAgentHint" : "aiAssistant.agentSource.newAgentThread");
   const selected = source === "local" ? `agent:${adapterId}` : settings.data?.defaultModelId ? `model:${settings.data.defaultModelId}` : "builtin";
   const providers = (settings.data?.providers ?? []).map((provider, index) => {
     const name = !provider.displayName || isLegacyProviderDisplayName(provider.displayName, provider.provider)
@@ -129,12 +128,11 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
               {desktop ? <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>{t("aiAssistant.agentSource.local")}</DropdownMenuLabel>
-                <p className="px-2 pb-1 text-[11px] text-slate-500">{localHint}</p>
                 {agents.isPending ? <p className="px-2 py-2 text-xs">{t("common.loading")}</p> : null}
                 {agents.isError ? <p role="alert" className="px-2 py-2 text-xs text-rose-600">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
-                {localAgents.map((agent, index) => <DropdownMenuRadioItem key={agent.id} value={`agent:${agent.id}`} disabled={mutation.isPending || (probeInputs[index] !== null && probes[index].isFetching) || agent.state !== "available"} onSelect={(event) => event.preventDefault()}>
+                {localAgents.map((agent, index) => desktopAcpSelectorVisible(agent, customPath) ? <DropdownMenuRadioItem key={agent.id} value={`agent:${agent.id}`} disabled={mutation.isPending || (probeInputs[index] !== null && probes[index].isFetching) || agent.state !== "available"} onSelect={(event) => event.preventDefault()}>
                   <span className="flex min-w-0 flex-1 flex-wrap justify-between gap-x-2"><span>{t(`aiAssistant.agentSource.${agent.id}`)}</span><span className="text-[10px] text-slate-500">{probeInputs[index] !== null && probes[index].isFetching ? t("aiAssistant.agentSource.probing") : t(`aiAssistant.agentSource.states.${agent.state}`)}</span></span>
-                </DropdownMenuRadioItem>)}
+                </DropdownMenuRadioItem> : null)}
                 {!agents.isPending && !agents.isError && !localAgents.length ? <p className="px-2 py-2 text-xs text-slate-500">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
               </> : null}
             </DropdownMenuRadioGroup>
