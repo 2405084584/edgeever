@@ -1487,6 +1487,15 @@ export const zhCN = {
       imageSaveFailed: "图片暂时无法保存到本机。请先下载图片，关闭页面后可能无法找回。",
     },
     agentSource: {
+      configure: "配置模型与 Agent",
+      switchNoteAgentHint: "切换后由所选 Agent 继续处理当前信息图。",
+      optionUnavailable: "不可用",
+
+      switch: "切换 AI",
+      newAgentThread: "切换外部 Agent 会开启新对话，原对话保留在历史中。",
+      noModels: "请在设置中配置 AI 模型。",
+      switchUnavailable: "Agent 暂不可用，请在设置中检查连接。",
+
       title: "Agent 运行模式",
       description: "使用应用内置 Agent，或连接本机运行的 Agent (ACP)。",
       localDisabled: "仅支持桌面客户端。",
