@@ -9,6 +9,7 @@ import {
   DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/api";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AI_SIDEBAR_ADAPTER_PATH_KEY, desktopAcpAutomaticProbeInput, desktopAcpSelectorVisible,
   desktopAcpAvailable, listDesktopAcpAdapters, probeDesktopAcpAdapter, selectAiSidebarAgent,
@@ -88,6 +89,10 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
   }).filter((provider) => provider.models.length);
   const choose = (value: string) => {
     if (disabled || mutation.isPending) return;
+    if (value.startsWith("agent:")) {
+      const index = localAgents.findIndex((agent) => agent.id === value.slice(6));
+      if (index < 0 || localAgents[index].state !== "available" || (probeInputs[index] !== null && probes[index].isFetching)) return;
+    }
     if (value === selected) { setOpen(false); return; }
     onPendingChange(true);
     void mutation.mutateAsync(value).catch(() => undefined).finally(() => onPendingChange(false));
@@ -112,27 +117,42 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
           {settings.isError || mutation.isError ? <p role="alert" className="px-2 py-1 text-xs text-rose-600">{aiErrorMessage(mutation.error ?? settings.error, t("aiAssistant.agentSource.switchUnavailable"), t("aiModel.encryptionKeyMissing"), t("aiModel.savedCredentialsUnavailable"))}</p> : null}
           <div className="max-h-72 overflow-y-auto">
             <DropdownMenuRadioGroup value={selected} onValueChange={choose}>
-              {source === "local" ? <DropdownMenuRadioItem value="builtin" disabled={mutation.isPending} onSelect={(event) => event.preventDefault()}>{t("aiAssistant.agentSource.builtin")}</DropdownMenuRadioItem> : null}
+              <DropdownMenuLabel>{t("aiAssistant.agentSource.builtin")}</DropdownMenuLabel>
+              {source === "local" && !providers.length ? <DropdownMenuRadioItem value="builtin" disabled={mutation.isPending} onSelect={(event) => event.preventDefault()}>{t("aiAssistant.agentSource.builtin")}</DropdownMenuRadioItem> : null}
               {settings.isPending ? <p className="px-2 py-2 text-xs">{t("common.loading")}</p> : null}
-              {providers.map((provider) => (
-                <div key={provider.id}>
-                  <DropdownMenuLabel>{t("aiAssistant.agentSource.builtin")} · {provider.name}</DropdownMenuLabel>
-                  {provider.models.map((model) => <DropdownMenuRadioItem key={model.id} value={`model:${model.id}`}
-                    disabled={mutation.isPending || settings.data?.readOnly || !settings.data?.encryptionConfigured || !provider.isEnabled || provider.credentialsUnavailable}
-                    onSelect={(event) => event.preventDefault()}>
-                    <span className="min-w-0 break-words">{model.displayName || model.modelId}{!provider.isEnabled || provider.credentialsUnavailable ? <span className="ml-2 text-[10px] text-slate-500">{t("aiAssistant.agentSource.optionUnavailable")}</span> : null}</span>
-                  </DropdownMenuRadioItem>)}
-                </div>
-              ))}
+              {providers.flatMap((provider) => provider.models.map((model) => <DropdownMenuRadioItem key={model.id} value={`model:${model.id}`}
+                disabled={mutation.isPending || settings.data?.readOnly || !settings.data?.encryptionConfigured || !provider.isEnabled || provider.credentialsUnavailable}
+                onSelect={(event) => event.preventDefault()}>
+                <span className="min-w-0 break-words">{provider.name} · {model.displayName || model.modelId}{!provider.isEnabled || provider.credentialsUnavailable ? <span className="ml-2 text-[10px] text-slate-500">{t("aiAssistant.agentSource.optionUnavailable")}</span> : null}</span>
+              </DropdownMenuRadioItem>))}
               {!settings.isPending && !providers.length ? <p className="px-2 py-2 text-xs text-slate-500">{t("aiAssistant.agentSource.noModels")}</p> : null}
               {desktop ? <>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>{t("aiAssistant.agentSource.local")}</DropdownMenuLabel>
                 {agents.isPending ? <p className="px-2 py-2 text-xs">{t("common.loading")}</p> : null}
                 {agents.isError ? <p role="alert" className="px-2 py-2 text-xs text-rose-600">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
-                {localAgents.map((agent, index) => desktopAcpSelectorVisible(agent, customPath) ? <DropdownMenuRadioItem key={agent.id} value={`agent:${agent.id}`} disabled={mutation.isPending || (probeInputs[index] !== null && probes[index].isFetching) || agent.state !== "available"} onSelect={(event) => event.preventDefault()}>
-                  <span className="flex min-w-0 flex-1 flex-wrap justify-between gap-x-2"><span>{t(`aiAssistant.agentSource.${agent.id}`)}</span><span className="text-[10px] text-slate-500">{probeInputs[index] !== null && probes[index].isFetching ? t("aiAssistant.agentSource.probing") : t(`aiAssistant.agentSource.states.${agent.state}`)}</span></span>
-                </DropdownMenuRadioItem> : null)}
+                <TooltipProvider>
+                  {localAgents.map((agent, index) => {
+                    if (!desktopAcpSelectorVisible(agent, customPath)) return null;
+                    const checking = probeInputs[index] !== null && probes[index].isFetching;
+                    const available = !checking && agent.state === "available";
+                    const status = checking ? t("aiAssistant.agentSource.probing") : t(`aiAssistant.agentSource.states.${agent.state}`);
+                    const name = t(`aiAssistant.agentSource.${agent.id}`);
+                    return <Tooltip key={agent.id}>
+                      <TooltipTrigger asChild>
+                        <DropdownMenuRadioItem value={`agent:${agent.id}`} disabled={mutation.isPending}
+                          aria-disabled={!available || mutation.isPending} aria-label={`${name} · ${status}`}
+                          className="aria-disabled:text-slate-400" onSelect={(event) => event.preventDefault()}>
+                          <span className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                            <span className="min-w-0 break-words">{name}</span>
+                            <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${available ? "bg-[#16A06E]" : "bg-amber-500"} ${checking ? "motion-safe:animate-pulse" : ""}`} />
+                          </span>
+                        </DropdownMenuRadioItem>
+                      </TooltipTrigger>
+                      <TooltipContent side="left">{status}</TooltipContent>
+                    </Tooltip>;
+                  })}
+                </TooltipProvider>
                 {!agents.isPending && !agents.isError && !localAgents.length ? <p className="px-2 py-2 text-xs text-slate-500">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
               </> : null}
             </DropdownMenuRadioGroup>
