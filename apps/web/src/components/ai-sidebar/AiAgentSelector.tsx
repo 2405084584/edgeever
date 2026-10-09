@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { Link } from "react-router";
 import { WORKSPACE_SETTINGS_PATH } from "@/hooks/useWorkspaceRoute";
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/api";
 import {
-  AI_SIDEBAR_ADAPTER_PATH_KEY, aiSidebarAdapterFromStorage,
+  AI_SIDEBAR_ADAPTER_PATH_KEY, desktopAcpAutomaticProbeInput,
   desktopAcpAvailable, listDesktopAcpAdapters, probeDesktopAcpAdapter, selectAiSidebarAgent,
   type AiSidebarSource, type DesktopAcpAdapterId,
 } from "@/lib/desktop-acp";
@@ -32,23 +32,32 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
   const desktop = desktopAcpAvailable();
   const agents = useQuery({
     queryKey: ["ai-sidebar-adapters"],
-    queryFn: async () => {
-      const listed = await listDesktopAcpAdapters();
-      const configured = aiSidebarAdapterFromStorage("antigravity", window.localStorage.getItem(AI_SIDEBAR_ADAPTER_PATH_KEY));
-      if (configured?.id === "antigravity" && configured.path) {
-        const checked = await probeDesktopAcpAdapter(configured);
-        return [...listed.filter((agent) => agent.id !== checked.id), checked];
-      }
-      return listed;
-    },
+    queryFn: listDesktopAcpAdapters,
     enabled: desktop && open,
     staleTime: 0,
   });
+  const customPath = desktop && open ? window.localStorage.getItem(AI_SIDEBAR_ADAPTER_PATH_KEY) ?? "" : "";
+  const listedAgents = agents.data ?? [];
+  const probeInputs = listedAgents.map((agent) => desktopAcpAutomaticProbeInput(agent, customPath));
+  const probes = useQueries({
+    queries: listedAgents.map((agent, index) => ({
+      queryKey: ["ai-sidebar-adapter-probe", agent.id, agent.version ?? "", probeInputs[index]?.path ?? ""],
+      queryFn: () => probeDesktopAcpAdapter(probeInputs[index]!),
+      enabled: desktop && open && probeInputs[index] !== null,
+      staleTime: 0,
+      retry: false,
+      refetchOnWindowFocus: false,
+    })),
+  });
+  // Each connector finishes independently, so a slow agent cannot block another.
+  const localAgents = listedAgents.map((agent, index) => probeInputs[index]
+    ? probes[index].isError ? { ...agent, state: "failed" as const, detail: "connection_failed" } : probes[index].data ?? agent
+    : agent);
   const mutation = useMutation({
     mutationFn: async (value: string) => {
       if (value.startsWith("agent:")) {
         const id = value.slice(6) as DesktopAcpAdapterId;
-        if (!agents.data?.some((agent) => agent.id === id && agent.state === "available")) throw new Error(t("aiAssistant.agentSource.switchUnavailable"));
+        if (!localAgents.some((agent) => agent.id === id && agent.state === "available")) throw new Error(t("aiAssistant.agentSource.switchUnavailable"));
         selectAiSidebarAgent("local", id);
       } else {
         if (value !== "builtin" && value.slice(6) !== settings.data?.defaultModelId) {
@@ -78,7 +87,6 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
       ? t("aiModel.defaultProviderName", { ordinal: formatProviderOrdinal(index + 1, locale) }) : provider.displayName;
     return { ...provider, name };
   }).filter((provider) => provider.models.length);
-  const localAgents = agents.data ?? [];
   const choose = (value: string) => {
     if (disabled || mutation.isPending) return;
     if (value === selected) { setOpen(false); return; }
@@ -124,8 +132,8 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange, 
                 <p className="px-2 pb-1 text-[11px] text-slate-500">{localHint}</p>
                 {agents.isPending ? <p className="px-2 py-2 text-xs">{t("common.loading")}</p> : null}
                 {agents.isError ? <p role="alert" className="px-2 py-2 text-xs text-rose-600">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
-                {localAgents.map((agent) => <DropdownMenuRadioItem key={agent.id} value={`agent:${agent.id}`} disabled={mutation.isPending || agents.isFetching || agent.state !== "available"} onSelect={(event) => event.preventDefault()}>
-                  <span className="flex min-w-0 flex-1 flex-wrap justify-between gap-x-2"><span>{t(`aiAssistant.agentSource.${agent.id}`)}</span><span className="text-[10px] text-slate-500">{t(`aiAssistant.agentSource.states.${agent.state}`)}</span></span>
+                {localAgents.map((agent, index) => <DropdownMenuRadioItem key={agent.id} value={`agent:${agent.id}`} disabled={mutation.isPending || (probeInputs[index] !== null && probes[index].isFetching) || agent.state !== "available"} onSelect={(event) => event.preventDefault()}>
+                  <span className="flex min-w-0 flex-1 flex-wrap justify-between gap-x-2"><span>{t(`aiAssistant.agentSource.${agent.id}`)}</span><span className="text-[10px] text-slate-500">{probeInputs[index] !== null && probes[index].isFetching ? t("aiAssistant.agentSource.probing") : t(`aiAssistant.agentSource.states.${agent.state}`)}</span></span>
                 </DropdownMenuRadioItem>)}
                 {!agents.isPending && !agents.isError && !localAgents.length ? <p className="px-2 py-2 text-xs text-slate-500">{t("aiAssistant.agentSource.switchUnavailable")}</p> : null}
               </> : null}
