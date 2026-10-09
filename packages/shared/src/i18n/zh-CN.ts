@@ -2737,7 +2737,7 @@ export const zhCN = {
     sidebarAndroidTitle: "在 Google Play 下载 EdgeEver 安卓端",
     sidebarIos: "iOS",
     sidebarIosBadge: "App Store",
-    sidebarIosRegionBadge: "非大陆区",
+    sidebarIosRegionBadge: "海外 ID",
     sidebarIosTitle: "在 App Store 下载 EdgeEver iOS 端（仅支持非大陆区 Apple ID）",
     sidebarIosAvailability: "仅支持非中国大陆区 Apple ID",
     sidebarChromeEdge: "Chrome / Edge",
