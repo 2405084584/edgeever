@@ -700,8 +700,8 @@ export const MemoDetailModal = ({
     Platform.OS === "android" ? ANDROID_SYSTEM_NAVIGATION_FALLBACK : 0
   ) + 16;
 
-  const handleReaderScroll = useCallback(async (scrollTop: number) => {
-    setTitleCollapsed(scrollTop > 24);
+  const handleReaderScroll = useCallback(async (collapsed: boolean) => {
+    setTitleCollapsed(collapsed);
   }, []);
 
   useEffect(() => {
