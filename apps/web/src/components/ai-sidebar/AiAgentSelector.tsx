@@ -34,18 +34,19 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
   const agents = useQuery({
     queryKey: ["ai-sidebar-adapters"],
     queryFn: listDesktopAcpAdapters,
-    enabled: desktop && open,
-    staleTime: 0,
+    enabled: desktop,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
   });
-  const customPath = desktop && open ? window.localStorage.getItem(AI_SIDEBAR_ADAPTER_PATH_KEY) ?? "" : "";
+  const customPath = desktop ? window.localStorage.getItem(AI_SIDEBAR_ADAPTER_PATH_KEY) ?? "" : "";
   const listedAgents = (agents.data ?? []).filter((agent) => desktopAcpSelectorVisible(agent, customPath));
   const probeInputs = listedAgents.map((agent) => desktopAcpAutomaticProbeInput(agent, customPath));
   const probes = useQueries({
     queries: listedAgents.map((agent, index) => ({
       queryKey: ["ai-sidebar-adapter-probe", agent.id, agent.version ?? "", probeInputs[index]?.path ?? ""],
       queryFn: () => probeDesktopAcpAdapter(probeInputs[index]!),
-      enabled: desktop && open && probeInputs[index] !== null,
-      staleTime: 0,
+      enabled: desktop && probeInputs[index] !== null,
+      staleTime: 30_000,
       retry: false,
       refetchOnWindowFocus: false,
     })),
@@ -91,7 +92,7 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
     if (disabled || mutation.isPending) return;
     if (value.startsWith("agent:")) {
       const index = localAgents.findIndex((agent) => agent.id === value.slice(6));
-      if (index < 0 || localAgents[index].state !== "available" || (probeInputs[index] !== null && probes[index].isFetching)) return;
+      if (index < 0 || localAgents[index].state !== "available" || (probeInputs[index] !== null && probes[index].isPending)) return;
     }
     if (value === selected) { setOpen(false); return; }
     onPendingChange(true);
@@ -103,7 +104,14 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
       <DropdownMenu open={open} onOpenChange={(next) => {
         if (mutation.isPending) return;
         setOpen(next);
-        if (next) { mutation.reset(); void settings.refetch(); }
+        if (next) {
+          mutation.reset();
+          void settings.refetch();
+          if (desktop && agents.isStale) void agents.refetch();
+          probes.forEach((probe, index) => {
+            if (probeInputs[index] !== null && probe.isStale) void probe.refetch();
+          });
+        }
       }}>
         <DropdownMenuTrigger asChild>
           <button type="button" disabled={disabled || mutation.isPending}
@@ -134,7 +142,7 @@ export function AiAgentSelector({ source, adapterId, disabled, onPendingChange }
                 <TooltipProvider>
                   {localAgents.map((agent, index) => {
                     if (!desktopAcpSelectorVisible(agent, customPath)) return null;
-                    const checking = probeInputs[index] !== null && probes[index].isFetching;
+                    const checking = probeInputs[index] !== null && probes[index].isPending;
                     const available = !checking && agent.state === "available";
                     const status = checking ? t("aiAssistant.agentSource.probing") : t(`aiAssistant.agentSource.states.${agent.state}`);
                     const name = t(`aiAssistant.agentSource.${agent.id}`);
