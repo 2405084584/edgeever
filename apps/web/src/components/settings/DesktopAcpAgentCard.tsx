@@ -43,6 +43,7 @@ const readAdapterId = (): DesktopAcpAdapterId => {
 const statusKey = (adapter: DesktopAcpAdapter | undefined, probing: boolean) => {
   if (probing) return "aiAssistant.agentSource.probing";
   if (!adapter || adapter.detail === "not_probed") return "aiAssistant.agentSource.notProbed";
+  if (adapter.detail === "authentication_timeout") return "aiAssistant.agentSource.authenticationTimedOut";
   if (adapter.detail === "invalid_path") return "aiAssistant.agentSource.invalidPath";
   if (adapter.detail === "desktop_unavailable") return "aiAssistant.agentSource.localDisabled";
   if (adapter.id === "grokBuild" && adapter.state === "not_installed") return "aiAssistant.agentSource.grokBuildNotFound";
@@ -93,7 +94,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
   const [probing, setProbing] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [installError, setInstallError] = useState(false);
-  const [authenticating, setAuthenticating] = useState(false);
+  const [authenticating, setAuthenticating] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = readSource();
@@ -182,7 +183,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
   };
 
   const authenticate = async (methodId: string) => {
-    setAuthenticating(true);
+    setAuthenticating(methodId);
     setInstallError(false);
     try {
       const result = await authenticateDesktopAcpAdapter({
@@ -194,7 +195,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
     } catch {
       setProbed({ id: adapterId, label: t(`aiAssistant.agentSource.${adapterId}`), state: "failed" });
     } finally {
-      setAuthenticating(false);
+      setAuthenticating(null);
     }
   };
 
@@ -365,7 +366,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span><Button type="button" variant="outline" size="sm" className="h-8 bg-card text-xs font-normal" disabled={probing || installing} onClick={() => void probe()}>
+                        <span><Button type="button" variant="outline" size="sm" className="h-8 bg-card text-xs font-normal" disabled={probing || installing || Boolean(authenticating)} onClick={() => void probe()}>
                           {probing ? t("aiAssistant.agentSource.probing") : t("aiAssistant.agentSource.probe")}
                         </Button></span>
                       </TooltipTrigger>
@@ -386,7 +387,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                     <p className="text-xs leading-relaxed text-slate-600">{t("aiAssistant.agentSource.piAgentLoginHint")}</p>
                   ) : null}
                   {(shown?.state === "needs_login" || shown?.state === "available") && isWorkBuddy ? (
-                    <p className="text-xs leading-relaxed text-slate-600">{t(adapterId === "workbuddyCn" ? "aiAssistant.agentSource.workbuddyCnLoginHint" : "aiAssistant.agentSource.workbuddyIntlLoginHint")}</p>
+                    <p className="text-[11px] leading-4 text-slate-500">{t(adapterId === "workbuddyCn" ? "aiAssistant.agentSource.workbuddyCnLoginHint" : "aiAssistant.agentSource.workbuddyIntlLoginHint")}</p>
                   ) : null}
                   {shown?.state === "available" && !isWorkBuddy && authMethods.length ? (
                     <p className="text-xs leading-relaxed text-slate-600">{t("aiAssistant.agentSource.authAvailableHint")}</p>
@@ -394,8 +395,8 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   {(shown?.state === "needs_login" || shown?.state === "available") && authMethods.length ? (
                     <div className="flex flex-wrap gap-2 pt-0.5">
                       {authMethods.map((method) => (
-                        <Button key={method.id} type="button" variant="outline" size="sm" className="h-8 bg-card text-xs font-normal" disabled={authenticating} onClick={() => void authenticate(method.id)}>
-                          {authenticating ? t("aiAssistant.agentSource.authenticating") : t("aiAssistant.agentSource.authenticateWith", { method: method.name })}
+                        <Button key={method.id} type="button" variant="outline" size="sm" className="h-8 bg-card text-xs font-normal" disabled={Boolean(authenticating)} onClick={() => void authenticate(method.id)}>
+                          {authenticating === method.id ? t("aiAssistant.agentSource.authenticating") : t("aiAssistant.agentSource.authenticateWith", { method: method.name })}
                         </Button>
                       ))}
                     </div>
