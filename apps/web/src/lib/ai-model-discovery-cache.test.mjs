@@ -60,9 +60,9 @@ describe("persistent model discovery cache", () => {
     expect(() => removeModelDiscoveryCache("test", restricted)).not.toThrow();
   });
 
-  test("refreshes at weekly expiry and backs off after failed background updates", () => {
+  test("refreshes at daily expiry and backs off after failed background updates", () => {
     const now = Date.now();
-    expect(nextModelDiscoveryRefresh(now, 0, now)).toBe(AI_MODEL_DISCOVERY_FRESH_MS);
+    expect(nextModelDiscoveryRefresh(now, 0, now)).toBe(24 * 60 * 60_000);
     expect(nextModelDiscoveryRefresh(now - AI_MODEL_DISCOVERY_FRESH_MS + 5_000, 0, now)).toBe(5_000);
     expect(nextModelDiscoveryRefresh(now - AI_MODEL_DISCOVERY_FRESH_MS, now, now)).toBe(60 * 60_000);
   });
