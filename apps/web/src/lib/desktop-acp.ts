@@ -174,7 +174,7 @@ export const probeDesktopAcpAdapter = async (input: { id: DesktopAcpAdapterId; p
   return desktop.probeAcpAdapter(input);
 };
 
-export const installDesktopAcpAdapter = async (id: Extract<DesktopAcpAdapterId, "codex" | "antigravity" | "piAgent">) => {
+export const installDesktopAcpAdapter = async (id: Extract<DesktopAcpAdapterId, "codex" | "claudeCode" | "antigravity" | "piAgent">) => {
   const desktop = bridge();
   if (!desktop?.installAcpAdapter) throw new Error("desktop_acp_unavailable");
   return desktop.installAcpAdapter(id);

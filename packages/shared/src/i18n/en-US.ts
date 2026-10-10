@@ -1521,7 +1521,7 @@ export const enUS = {
       install: "Install connector",
       installHint: "When a local agent is detected, its connector downloads from the official source. This may exceed 100 MiB; updates are checked automatically.",
       claudeCodeNotFound: "Claude Code ACP connector not found",
-      claudeCodeMissingHint: "Run npm install -g @agentclientprotocol/claude-agent-acp and make sure claude-agent-acp runs from your shell. This connector is maintained by the ACP project.",
+      claudeCodeMissingHint: "Click “Install connector” to let EdgeEver install it and check the connection.",
       openClawNotFound: "OpenClaw CLI not found",
       openClawMissingHint: "Install the OpenClaw CLI and start its Gateway. EdgeEver connects using openclaw acp.",
       openClawNoteAccessHint: "OpenClaw ACP does not accept session MCP servers. To access EdgeEver notes, configure EdgeEver MCP in the OpenClaw Gateway and check the instance and account.",

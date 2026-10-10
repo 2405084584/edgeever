@@ -1521,7 +1521,7 @@ export const pl = {
       install: "Zainstaluj konektor",
       installHint: "Po wykryciu lokalnego agenta jego konektor jest pobierany z oficjalnego źródła. Może zajmować ponad 100 MiB; aktualizacje są sprawdzane automatycznie.",
       claudeCodeNotFound: "Nie znaleziono konektora Claude Code ACP",
-      claudeCodeMissingHint: "Uruchom npm install -g @agentclientprotocol/claude-agent-acp i upewnij się, że polecenie claude-agent-acp działa w Twojej powłoce. Ten konektor jest utrzymywany przez projekt ACP.",
+      claudeCodeMissingHint: "Kliknij „Zainstaluj konektor”, aby EdgeEver zainstalował go i sprawdził połączenie.",
       openClawNotFound: "Nie znaleziono OpenClaw CLI",
       openClawMissingHint: "Zainstaluj OpenClaw CLI i uruchom jego Gateway. EdgeEver łączy się za pomocą openclaw acp.",
       openClawNoteAccessHint: "OpenClaw ACP nie akceptuje serwerów MCP sesji. Aby uzyskać dostęp do notatek EdgeEver, skonfiguruj EdgeEver MCP w OpenClaw Gateway i sprawdź instancję oraz konto.",

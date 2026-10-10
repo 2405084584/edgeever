@@ -163,7 +163,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
   };
 
   const install = async () => {
-    if (adapterId !== "codex" && adapterId !== "antigravity" && adapterId !== "piAgent") return;
+    if (adapterId !== "codex" && adapterId !== "claudeCode" && adapterId !== "antigravity" && adapterId !== "piAgent") return;
     setInstalling(true);
     setInstallError(false);
     try {
@@ -358,7 +358,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   ) : null}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  {shown?.state === "not_installed" && (adapterId === "codex" || adapterId === "antigravity" || (adapterId === "piAgent" && shown?.detail === "adapter_missing")) ? (
+                  {shown?.state === "not_installed" && (adapterId === "codex" || adapterId === "claudeCode" || adapterId === "antigravity" || (adapterId === "piAgent" && shown?.detail === "adapter_missing")) ? (
                     <Button type="button" variant="outline" size="sm" className="h-8 bg-card text-xs font-normal" disabled={installing || probing} onClick={() => void install()}>
                       {installing ? t("aiAssistant.agentSource.installing") : t("aiAssistant.agentSource.install")}
                     </Button>
@@ -379,7 +379,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
               {hasDetails ? (
                 <div className="space-y-2">
                   {shown?.state === "not_installed" ? (
-                    <p className="text-xs leading-relaxed text-slate-600">
+                    <p className={adapterId === "claudeCode" ? "text-[11px] leading-4 text-slate-500" : "text-xs leading-relaxed text-slate-600"}>
                       {t(adapterId === "claudeCode" ? "aiAssistant.agentSource.claudeCodeMissingHint" : adapterId === "openClaw" ? "aiAssistant.agentSource.openClawMissingHint" : adapterId === "hermesAgent" ? "aiAssistant.agentSource.hermesAgentMissingHint" : adapterId === "grokBuild" ? "aiAssistant.agentSource.grokBuildMissingHint" : adapterId === "deepseekHarness" ? "aiAssistant.agentSource.deepseekHarnessMissingHint" : adapterId === "piAgent" ? shown.detail === "adapter_missing" ? "aiAssistant.agentSource.piAgentAdapterMissingHint" : "aiAssistant.agentSource.piAgentMissingHint" : adapterId === "workbuddyCn" || adapterId === "workbuddyIntl" ? "aiAssistant.agentSource.workbuddyMissingHint" : "aiAssistant.agentSource.installHint")}
                     </p>
                   ) : null}

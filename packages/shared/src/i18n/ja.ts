@@ -1521,7 +1521,7 @@ export const ja = {
       install: "接続コンポーネントをインストール",
       installHint: "ローカルのエージェントを検出すると、公式配布元からダウンロードします。100 MiB を超える場合があり、インストール後は更新を自動確認します。",
       claudeCodeNotFound: "Claude Code ACP 接続コンポーネントが見つかりません",
-      claudeCodeMissingHint: "npm install -g @agentclientprotocol/claude-agent-acp を実行し、claude-agent-acp をコマンドラインから実行できるようにしてください。この接続コンポーネントは ACP プロジェクトが提供します。",
+      claudeCodeMissingHint: "「接続コンポーネントをインストール」をクリックすると、EdgeEver がインストールして接続を確認します。",
       openClawNotFound: "OpenClaw CLI が見つかりません",
       openClawMissingHint: "OpenClaw CLI をインストールして Gateway を起動してください。EdgeEver は openclaw acp で接続します。",
       openClawNoteAccessHint: "OpenClaw ACP はセッション MCP サーバーを受け付けません。EdgeEver のノートにアクセスするには、OpenClaw Gateway で EdgeEver MCP を別途設定し、インスタンスとアカウントを確認してください。",

@@ -1521,7 +1521,7 @@ export const zhCN = {
       install: "安装连接组件",
       installHint: "检测到本机 Agent 后会从官方来源下载，可能超过 100 MiB；安装后会自动检查更新。",
       claudeCodeNotFound: "未找到 Claude Code ACP 连接组件",
-      claudeCodeMissingHint: "请运行 npm install -g @agentclientprotocol/claude-agent-acp，并确保 claude-agent-acp 可从命令行运行。此连接组件由 ACP 项目提供。",
+      claudeCodeMissingHint: "点击“安装连接组件”，EdgeEver 会自动安装并检查连接。",
       openClawNotFound: "未找到 OpenClaw CLI",
       openClawMissingHint: "请安装 OpenClaw CLI 并启动 Gateway。EdgeEver 使用 openclaw acp 连接。",
       openClawNoteAccessHint: "OpenClaw ACP 不接受会话级 MCP 服务；如需访问 EdgeEver 笔记，请在 OpenClaw Gateway 中单独配置 EdgeEver MCP，并核对实例和账号。",
