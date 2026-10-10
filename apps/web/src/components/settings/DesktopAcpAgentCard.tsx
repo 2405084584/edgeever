@@ -20,6 +20,7 @@ import {
   type DesktopAcpAdapterId,
 } from "@/lib/desktop-acp";
 import { cn } from "@/lib/utils";
+import { AgentLogo } from "@/components/ai-sidebar/AgentLogo";
 import {
   SETTINGS_CARD_DESCRIPTION_CLASSNAME,
   SETTINGS_CARD_HEADER_CLASSNAME,
@@ -234,7 +235,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
             const disabled = option === "local" && !bridge;
             const checked = source === option;
             return (
-              <div key={option} className={cn(disabled && "opacity-60", checked && "bg-slate-50/80")}>
+              <div key={option} className={cn(disabled && "opacity-75", checked && "bg-slate-50/80")}>
                 <label className={cn("flex items-start gap-3 px-3.5 py-2.5", disabled ? "cursor-not-allowed" : "cursor-pointer")}>
                   <input
                     className="mt-0.5"
@@ -256,7 +257,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   <div role="group" className="flex flex-wrap gap-2 px-3.5 pb-3 pl-9" aria-label={t("aiAssistant.agentSource.adapter")}>
                     {adapterIds.map((id) => (
                       <span key={id} className="flex h-8 items-center gap-2 rounded-md border border-slate-200 px-2.5 text-xs text-slate-500">
-                        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                        <AgentLogo id={id} />
                         {t(`aiAssistant.agentSource.${id}`)}
                       </span>
                     ))}
@@ -276,7 +277,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                   <label
                     key={id}
                     className={cn(
-                      "flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 text-xs",
+                      "flex h-8 cursor-pointer items-center gap-2 rounded-md border px-2.5 text-xs has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
                       checked ? "border-slate-900 bg-card text-slate-950" : "border-slate-200 text-slate-600"
                     )}
                   >
@@ -288,7 +289,7 @@ const DesktopAcpAgentCardBody = ({ bridge }: { bridge: boolean }) => {
                       checked={checked}
                       onChange={() => selectAdapter(id)}
                     />
-                    <span aria-hidden="true" className={cn("h-1.5 w-1.5 rounded-full", checked ? "bg-slate-950" : "bg-slate-400")} />
+                    <AgentLogo id={id} />
                     {t(`aiAssistant.agentSource.${id}`)}
                   </label>
                 );
