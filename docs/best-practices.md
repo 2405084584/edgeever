@@ -15,21 +15,22 @@ A practical guide to core workflows, key features, and real-world usage scenario
 - [6. X (Twitter) Post & Quote Clipping](#6-x-twitter-post--quote-clipping)
 - [7. Zhihu Answer & Column Article Clipping](#7-zhihu-answer--column-article-clipping)
 - [8. Reddit Discussion Post Clipping](#8-reddit-discussion-post-clipping)
+- [9. Instagram Post & Carousel Clipping](#9-instagram-post--carousel-clipping)
 
 ### AI-Powered Structuring & Multi-Dimensional Data
-- [9. AI Conversational Generation of Mind Maps, Flowcharts & Architecture Diagrams](#9-ai-conversational-generation-of-mind-maps-flowcharts--architecture-diagrams)
-- [10. AI Generation of Structured Infographics (Timelines, Matrices & Quadrants)](#10-ai-generation-of-structured-infographics-timelines-matrices--quadrants)
-- [11. AI Conversational Database Table Generation](#11-ai-conversational-database-table-generation)
-- [12. Public Online Form Collection from Database Tables](#12-public-online-form-collection-from-database-tables)
-- [13. Connecting Local Agents via ACP for Note Interaction](#13-connecting-local-agents-via-acp-for-note-interaction)
+- [10. AI Conversational Generation of Mind Maps, Flowcharts & Architecture Diagrams](#10-ai-conversational-generation-of-mind-maps-flowcharts--architecture-diagrams)
+- [11. AI Generation of Structured Infographics (Timelines, Matrices & Quadrants)](#11-ai-generation-of-structured-infographics-timelines-matrices--quadrants)
+- [12. AI Conversational Database Table Generation](#12-ai-conversational-database-table-generation)
+- [13. Public Online Form Collection from Database Tables](#13-public-online-form-collection-from-database-tables)
+- [14. Connecting Local Agents via ACP for Note Interaction](#14-connecting-local-agents-via-acp-for-note-interaction)
 
 ### Visual Styling & Omnichannel Publishing
-- [14. Note Export to Long Image & Code Cards](#14-note-export-to-long-image--code-cards)
-- [15. Social Media Poster & Cover Design from Notes](#15-social-media-poster--cover-design-from-notes)
-- [16. Copying Notes to WeChat Official Account & Blogs](#16-copying-notes-to-wechat-official-account--blogs)
+- [15. Note Export to Long Image & Code Cards](#15-note-export-to-long-image--code-cards)
+- [16. Social Media Poster & Cover Design from Notes](#16-social-media-poster--cover-design-from-notes)
+- [17. Copying Notes to WeChat Official Account & Blogs](#17-copying-notes-to-wechat-official-account--blogs)
 
 ### Open Ecosystem & Extensibility
-- [17. Open Plugin API & Custom Plugin Development](#17-open-plugin-api--custom-plugin-development)
+- [18. Open Plugin API & Custom Plugin Development](#18-open-plugin-api--custom-plugin-development)
 
 ---
 
@@ -151,9 +152,26 @@ Right-click on the post title or body and select **"Save Selection to EdgeEver"*
 
 ---
 
+### 9. Instagram Post & Carousel Clipping
+
+Right-click any Instagram post or carousel and select **"Save Post to EdgeEver"** using the EdgeEver Web Clipper extension.
+
+- Extracts author handle, full caption text, publish timestamp, topic tags, and source URL.
+- Fully extracts multi-image carousel sets and video covers, automatically formatted into a multi-column gallery layout.
+
+| 1. Right-Click Save Instagram Post |
+| :---: |
+| ![Right-click save Instagram post to EdgeEver](assets/best-practices/original-image/web-clipper/instgram/ins.png) |
+
+| 2. Note with Metadata & Multi-Image Gallery |
+| :---: |
+| ![EdgeEver clipped Instagram post note effect](assets/best-practices/original-image/web-clipper/instgram/ins-in-note.png) |
+
+---
+
 ## AI-Powered Structuring & Multi-Dimensional Data
 
-### 9. AI Conversational Generation of Mind Maps, Flowcharts & Architecture Diagrams
+### 10. AI Conversational Generation of Mind Maps, Flowcharts & Architecture Diagrams
 
 Prompt the AI Co-pilot (or connected local Agent) with natural language (e.g., "Generate a mind map / flowchart / architecture diagram about LLMs") to create editable diagrams directly in notes.
 
@@ -173,7 +191,7 @@ Prompt the AI Co-pilot (or connected local Agent) with natural language (e.g., "
 
 ---
 
-### 10. AI Generation of Structured Infographics (Timelines, Matrices & Quadrants)
+### 11. AI Generation of Structured Infographics (Timelines, Matrices & Quadrants)
 
 Use built-in infographic templates (timelines, comparison matrices, quadrants, and hierarchy charts) by prompting the AI Co-pilot with your topic.
 
@@ -190,7 +208,7 @@ Use built-in infographic templates (timelines, comparison matrices, quadrants, a
 
 ---
 
-### 11. AI Conversational Database Table Generation
+### 12. AI Conversational Database Table Generation
 
 Send a prompt to the AI Co-pilot (e.g., "Create a database table for social media content planning" or "Generate an employee onboarding tracker") to construct complete data tables.
 
@@ -207,7 +225,7 @@ Send a prompt to the AI Co-pilot (e.g., "Create a database table for social medi
 
 ---
 
-### 12. Public Online Form Collection from Database Tables
+### 13. Public Online Form Collection from Database Tables
 
 Click **"Form Collection"** at the top of any database table to generate a public online data entry form.
 
@@ -220,7 +238,7 @@ Click **"Form Collection"** at the top of any database table to generate a publi
 
 ---
 
-### 13. Connecting Local Agents via ACP for Note Interaction
+### 14. Connecting Local Agents via ACP for Note Interaction
 
 EdgeEver natively supports **ACP (Agent Client Protocol)**, allowing desktop clients to connect with local AI agent environments (such as Codex, Claude Code, DeepSeek Harness, Antigravity, etc.).
 
@@ -235,7 +253,7 @@ EdgeEver natively supports **ACP (Agent Client Protocol)**, allowing desktop cli
 
 ## Visual Styling & Omnichannel Publishing
 
-### 14. Note Export to Long Image & Code Cards
+### 15. Note Export to Long Image & Code Cards
 
 Use the "Share as Image" feature to render notes into high-resolution long images or cards.
 
@@ -248,7 +266,7 @@ Use the "Share as Image" feature to render notes into high-resolution long image
 
 ---
 
-### 15. Social Media Poster & Cover Design from Notes
+### 16. Social Media Poster & Cover Design from Notes
 
 Click **"Create Poster"** in any note's action menu (or via "New → Poster") to load key takeaways and titles into the Poster Design Studio.
 
@@ -261,7 +279,7 @@ Click **"Create Poster"** in any note's action menu (or via "New → Poster") to
 
 ---
 
-### 16. Copying Notes to WeChat Official Account & Blogs
+### 17. Copying Notes to WeChat Official Account & Blogs
 
 Select **"Copy to Official Account / Blog"** (复制到公众号 / 博客) from the note menu to convert notes into rich text with inline CSS.
 
@@ -279,7 +297,7 @@ Select **"Copy to Official Account / Blog"** (复制到公众号 / 博客) from 
 
 ## Open Ecosystem & Extensibility
 
-### 17. Open Plugin API & Custom Plugin Development
+### 18. Open Plugin API & Custom Plugin Development
 
 EdgeEver features an extension manager supporting one-click installation via GitHub repository URLs or Manifest links, with cross-device workspace synchronization between Web and Desktop.
 
