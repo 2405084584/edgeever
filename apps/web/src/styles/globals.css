@@ -2136,6 +2136,22 @@ html[data-edgeever-extension-theme] .edgeever-memo-divider {
   margin: 0;
 }
 
+.ProseMirror .edgeever-image-node img[draggable="true"] {
+  cursor: grab;
+}
+
+.ProseMirror .edgeever-image-node img[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.edgeever-image-drop-indicator {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  background: hsl(var(--foreground));
+  border-radius: 2px;
+}
+
 .ProseMirror .edgeever-image-node.is-selected img {
   outline: 2px solid rgb(var(--slate-500-rgb) / 0.6);
   outline-offset: 3px;
