@@ -83,7 +83,7 @@ describe("restored resource security", () => {
   for (const mimeType of ["text/html", "application/xhtml+xml"]) {
     test(`resumable image restore rejects ${mimeType} before creating a multipart upload`, async () => {
       const f = await fixture();
-      const previousObjects = await readdir(f.directory, { recursive: true });
+      const previousObjects = (await readdir(f.directory, { recursive: true })).sort();
       const response = await f.request("/api/v1/restores/json/resources/res_security/uploads", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(f.metadata({ mimeType, filename: "resource.html", byteSize: html.length })),
@@ -92,7 +92,7 @@ describe("restored resource security", () => {
       expect(await response.json()).toMatchObject({ error: { code: "unsupported_media_type" } });
       expect(f.database.query("SELECT COUNT(*) AS count FROM resource_uploads").get().count).toBe(0);
       expect(f.resourceRow()).toBeNull();
-      expect(await readdir(f.directory, { recursive: true })).toEqual(previousObjects);
+      expect((await readdir(f.directory, { recursive: true })).sort()).toEqual(previousObjects);
     });
   }
 
@@ -339,7 +339,7 @@ describe("single-valued resource content types", () => {
       test(`${mode} restore rejects the entire ambiguous ${mimeType} declaration`, async () => {
         const f = await fixture();
         const metadata = f.metadata({ kind, mimeType, filename: "resource.bin", byteSize: html.length });
-        const previousObjects = await readdir(f.directory, { recursive: true });
+        const previousObjects = (await readdir(f.directory, { recursive: true })).sort();
         const response = mode === "legacy"
           ? await f.restore(metadata, html, "application/octet-stream")
           : await f.request("/api/v1/restores/json/resources/res_security/uploads", {
@@ -349,7 +349,7 @@ describe("single-valued resource content types", () => {
         expect(await response.json()).toMatchObject({ error: { code: "unsupported_media_type" } });
         expect(f.resourceRow()).toBeNull();
         expect(f.database.query("SELECT COUNT(*) AS count FROM resource_uploads").get().count).toBe(0);
-        expect(await readdir(f.directory, { recursive: true })).toEqual(previousObjects);
+        expect((await readdir(f.directory, { recursive: true })).sort()).toEqual(previousObjects);
       });
     }
 
