@@ -111,3 +111,25 @@ describe("existing image dragging (#708)", () => {
     expect(imageDragKey.getState(next)).toBeNull();
   });
 });
+
+describe("dragging out of a two-image gallery (#728)", () => {
+  for (const from of [1, 2]) {
+    test(`moving image ${from} preserves attributes, selection and one-step undo`, () => {
+      const before = EditorState.create({
+        doc: schema.nodes.doc.create(null, [gallery("A", "B"), paragraph("text")]),
+        plugins: [history(), createImageDragPlugin(), createImageGalleryCleanupPlugin()],
+      });
+      const moved = before.doc.nodeAt(from);
+      const survivor = before.doc.firstChild.child(from === 1 ? 1 : 0);
+      let next = move(before, from, before.doc.content.size);
+      expect(next.doc.firstChild).toBe(survivor);
+      expect(next.doc.lastChild).toBe(moved);
+      expect(next.selection.node).toBe(moved);
+      const after = next.doc;
+      expect(undo(next, tr => { next = next.applyTransaction(tr).state; })).toBe(true);
+      expect(next.doc.eq(before.doc)).toBe(true);
+      expect(redo(next, tr => { next = next.applyTransaction(tr).state; })).toBe(true);
+      expect(next.doc.eq(after)).toBe(true);
+    });
+  }
+});
