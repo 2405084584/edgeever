@@ -2946,7 +2946,7 @@ export const pl = {
     openMarkdown: "Zobacz .md",
     markdownRawLabel: "Surowy Markdown",
     copyMarkdownLink: "Kopiuj link .md",
-    markdownHint: "Dodaj .md, aby pobrać",
+    markdownHint: "Do kontekstu AI lub importu do innych aplikacji",
     markdownPasswordProtectedHint: "Niedostępne z hasłem",
     revoke: "Wyłącz udostępnianie",
     error: "Nie udało się zaktualizować udostępniania. Spróbuj ponownie.",

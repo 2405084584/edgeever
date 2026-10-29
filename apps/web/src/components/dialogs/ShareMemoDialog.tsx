@@ -165,7 +165,7 @@ export const ShareMemoDialog = ({
               </Button>
             </div>
 
-            <div className="flex items-center justify-between gap-2 rounded-lg border border-slate-200/90 bg-slate-50/70 px-3 py-2 text-xs dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="flex items-center justify-between gap-2 px-0.5 text-xs">
               <span className="flex min-w-0 items-center gap-1.5 text-slate-700 dark:text-slate-300">
                 <FileCode2 className="h-4 w-4 shrink-0 text-slate-500" />
                 <span className="font-medium">{t("sharing.markdownRawLabel")}</span>

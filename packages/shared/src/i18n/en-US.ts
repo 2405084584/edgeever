@@ -2957,7 +2957,7 @@ export const enUS = {
     openMarkdown: "View .md",
     markdownRawLabel: "Raw Markdown",
     copyMarkdownLink: "Copy .md link",
-    markdownHint: "Append .md to get raw text",
+    markdownHint: "Ideal for AI reference or importing into other apps",
     markdownPasswordProtectedHint: "Unavailable with password",
     revoke: "Revoke sharing",
     error: "Sharing could not be updated. Please try again.",

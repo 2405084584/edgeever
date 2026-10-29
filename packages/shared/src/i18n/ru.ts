@@ -2957,7 +2957,7 @@ export const ru = {
     openMarkdown: "Просмотр .md",
     markdownRawLabel: "Исходный Markdown",
     copyMarkdownLink: "Копировать ссылку .md",
-    markdownHint: "Добавьте .md для получения",
+    markdownHint: "Для ИИ-контекста и импорта в другие приложения",
     markdownPasswordProtectedHint: "Недоступно с паролем",
     revoke: "Отозвать доступ",
     error: "Не удалось обновить доступ. Попробуйте снова.",

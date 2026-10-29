@@ -2946,7 +2946,7 @@ export const ja = {
     openMarkdown: ".md を表示",
     markdownRawLabel: "Raw Markdown",
     copyMarkdownLink: ".md リンクをコピー",
-    markdownHint: "末尾に .md で取得",
+    markdownHint: "AI での参照や他アプリへの取り込み向け",
     markdownPasswordProtectedHint: "パスワード設定時は利用不可",
     revoke: "共有を取り消す",
     error: "共有を更新できませんでした。再試行してください。",

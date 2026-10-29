@@ -2955,7 +2955,7 @@ export const zhCN = {
     openMarkdown: "查看 .md",
     markdownRawLabel: "原始 Markdown",
     copyMarkdownLink: "复制 .md 链接",
-    markdownHint: "末尾追加 .md 直接获取",
+    markdownHint: "适合 AI 对话引用或跨软件导入",
     markdownPasswordProtectedHint: "密码保护下不可用",
     revoke: "取消分享",
     error: "分享状态更新失败，请稍后重试。",
