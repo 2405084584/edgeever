@@ -2176,6 +2176,10 @@ export const pl = {
     confirmImport: "Importuj",
   },
   shortcuts: {
+    globalSectionTitle: "Skróty globalne",
+    globalSectionTip: "Działają w innych aplikacjach; zapisane tylko na tym urządzeniu",
+    appSectionTitle: "Skróty",
+    appSectionTip: "Aktywne, gdy okno jest aktywne",
     global: {
       label: "Pokaż lub ukryj okno aplikacji",
       description: "Działa także w innych aplikacjach. Skrót jest zapisany tylko na tym urządzeniu.",

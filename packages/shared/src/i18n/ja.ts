@@ -2176,6 +2176,10 @@ export const ja = {
     confirmImport: "取り込む",
   },
   shortcuts: {
+    globalSectionTitle: "グローバルショートカット",
+    globalSectionTip: "他のアプリからでも使用可能（この端末にのみ保存）",
+    appSectionTitle: "ショートカット",
+    appSectionTip: "ウィンドウがアクティブなときに有効",
     global: {
       label: "デスクトップウィンドウの表示・非表示",
       description: "他のアプリからも使用できます。このショートカットはこの端末にのみ保存されます。",

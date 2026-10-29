@@ -2187,6 +2187,10 @@ export const zhCN = {
     confirmImport: "确认导入",
   },
   shortcuts: {
+    globalSectionTitle: "全局快捷键",
+    globalSectionTip: "在其他应用中也可使用，仅保存在当前设备",
+    appSectionTitle: "快捷键",
+    appSectionTip: "仅在窗口处于焦点时生效",
     global: {
       label: "显示或隐藏桌面窗口",
       description: "在其他应用中也可使用。此快捷键只保存在当前设备。",
