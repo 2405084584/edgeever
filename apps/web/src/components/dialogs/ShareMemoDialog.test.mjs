@@ -6,9 +6,19 @@ const source = readFileSync(new URL("./ShareMemoDialog.tsx", import.meta.url), "
 
 describe("ShareMemoDialog raw markdown link support", () => {
   test("generates public share URLs and .md alternates", () => {
-    const url = getPublicShareUrl("my-custom-note");
-    expect(url).toBe("/share/my-custom-note");
-    expect(`${url}.md`).toBe("/share/my-custom-note.md");
+    const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+    try {
+      delete globalThis.window;
+      const url = getPublicShareUrl("my-custom-note");
+      expect(url).toBe("/share/my-custom-note");
+      expect(`${url}.md`).toBe("/share/my-custom-note.md");
+
+      globalThis.window = { location: { origin: "https://notes.example.com" } };
+      expect(getPublicShareUrl("我的笔记")).toBe(`https://notes.example.com/share/${encodeURIComponent("我的笔记")}`);
+    } finally {
+      if (originalWindow) Object.defineProperty(globalThis, "window", originalWindow);
+      else delete globalThis.window;
+    }
   });
 
   test("renders compact raw markdown strip with copy button and i18n labels", () => {
