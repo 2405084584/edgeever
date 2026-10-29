@@ -165,23 +165,33 @@ export const createImageGalleryCleanupPlugin = () => new Plugin({
   appendTransaction(transactions, _oldState, state) {
     if (!transactions.some((transaction) => transaction.docChanged)) return null;
 
-    const emptyGalleries: Array<{ from: number; to: number }> = [];
+    const galleries: Array<{ from: number; to: number; empty: boolean }> = [];
     state.doc.descendants((node, position) => {
       if (node.type.name !== IMAGE_GALLERY_NODE_TYPE) return;
       // image+ makes ProseMirror insert an image with src=null when its last
       // child is deleted. Remove that shell from the live document as well as
       // saved snapshots. Pending uploads have a nonempty src and stay intact.
-      if (!node.content.content.some((image) =>
+      const empty = !node.content.content.some((image) =>
         typeof image.attrs.src === "string" && image.attrs.src.trim().length > 0
-      )) {
-        emptyGalleries.push({ from: position, to: position + node.nodeSize });
+      );
+      if (empty || node.childCount === 1) {
+        galleries.push({ from: position, to: position + node.nodeSize, empty });
       }
       return false;
     });
-    if (!emptyGalleries.length) return null;
+    if (!galleries.length) return null;
 
     const transaction = state.tr;
-    for (const { from, to } of emptyGalleries.reverse()) transaction.delete(from, to);
+    for (const { from, to, empty } of galleries.reverse()) {
+      if (empty) {
+        transaction.delete(from, to);
+      } else {
+        // Lift instead of replacing the image so selections and upload positions
+        // map through the removed wrapper, retaining every image attribute.
+        const range = transaction.doc.resolve(from + 1).blockRange(transaction.doc.resolve(to - 1));
+        if (range) transaction.lift(range, range.depth - 1);
+      }
+    }
     return transaction;
   },
 });

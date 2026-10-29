@@ -29,9 +29,9 @@ describe("live gallery deletion (#707)", () => {
   test("deleting both images leaves editable empty content and empty Markdown", () => {
     const e = editor([gallery("/one.jpg", "/two.jpg")]);
     deleteImage(e, 1);
-    expect(e.state.doc.firstChild.firstChild.attrs.src).toBe("/two.jpg");
-    expect(e.state.doc.firstChild.attrs).toMatchObject({ layout: "3", fit: "height" });
-    deleteImage(e, 1);
+    expect(e.state.doc.firstChild.type.name).toBe("image");
+    expect(e.state.doc.firstChild.attrs.src).toBe("/two.jpg");
+    deleteImage(e, 0);
     expect(e.state.doc.toJSON()).toEqual({ type: "doc", content: [{ type: "paragraph" }] });
     expect(e.state.selection).toBeInstanceOf(TextSelection);
     expect(docToMarkdown(e.state.doc.toJSON())).toBe("");
@@ -45,7 +45,7 @@ describe("live gallery deletion (#707)", () => {
     deleteImage(e, 1);
     e.dispatch(closeHistory(e.state.tr));
     const before = e.state.doc.toJSON();
-    deleteImage(e, 1);
+    deleteImage(e, 0);
     expect(undo(e.state, e.dispatch)).toBe(true);
     expect(e.state.doc.toJSON()).toEqual(before);
     expect(redo(e.state, e.dispatch)).toBe(true);
@@ -86,13 +86,59 @@ describe("live gallery deletion (#707)", () => {
     const pending = `${TRANSIENT_IMAGE_UPLOAD_PREFIX}pending`;
     const e = editor([gallery("/one.jpg", pending)]);
     deleteImage(e, 1);
-    expect(e.state.doc.firstChild.type.name).toBe("edgeeverImageGallery");
-    expect(e.state.doc.firstChild.firstChild.attrs.src).toBe(pending);
+    expect(e.state.doc.firstChild.type.name).toBe("image");
+    expect(e.state.doc.firstChild.attrs.src).toBe(pending);
+    e.dispatch(e.state.tr.setNodeMarkup(0, undefined, { src: "/uploaded.jpg" }));
+    expect(e.state.doc.firstChild.attrs.src).toBe("/uploaded.jpg");
   });
 
   test("standalone image deletion keeps its normal behavior", () => {
     const e = editor([image("/one.jpg")]);
     deleteImage(e, 0);
     expect(e.state.doc.toJSON()).toEqual({ type: "doc", content: [{ type: "paragraph" }] });
+  });
+});
+
+
+describe("single-image gallery cleanup (#728)", () => {
+  for (const [fit, removed] of [["width", 1], ["width", 2], ["height", 1], ["height", 2]]) {
+    test(`${fit}: deleting image ${removed} unwraps the survivor and undo restores the gallery`, () => {
+      const node = gallery("/one.jpg", "/two.jpg");
+      const e = editor([node.type.create({ ...node.attrs, fit }, node.content)]);
+      const before = e.state.doc;
+      const survivor = before.firstChild.child(removed === 1 ? 1 : 0);
+      deleteImage(e, removed);
+      expect(e.state.doc.firstChild).toBe(survivor);
+      const after = e.state.doc;
+      expect(undo(e.state, e.dispatch)).toBe(true);
+      expect(e.state.doc.eq(before)).toBe(true);
+      expect(redo(e.state, e.dispatch)).toBe(true);
+      expect(e.state.doc.eq(after)).toBe(true);
+    });
+  }
+
+  test("three images becoming two retain their gallery settings", () => {
+    const e = editor([gallery("A", "B", "C")]);
+    deleteImage(e, 2);
+    expect(e.state.doc.firstChild.type.name).toBe("edgeeverImageGallery");
+    expect(e.state.doc.firstChild.childCount).toBe(2);
+    expect(e.state.doc.firstChild.attrs).toMatchObject({ layout: "3", fit: "height" });
+  });
+
+  test("lifting a nested image preserves its selection and surrounding text", () => {
+    const e = editor([schema.nodes.blockquote.create(null, gallery("A", "B")), paragraph("outside")]);
+    e.dispatch(e.state.tr.setSelection(NodeSelection.create(e.state.doc, 2)));
+    deleteImage(e, 3);
+    expect(e.state.doc.firstChild.firstChild.attrs.src).toBe("A");
+    expect(e.state.selection).toBeInstanceOf(NodeSelection);
+    expect(e.state.selection.node.attrs.src).toBe("A");
+    expect(e.state.doc.lastChild.textContent).toBe("outside");
+  });
+
+  test("multiple galleries unwrap in one edit without shifting other content", () => {
+    const e = editor([gallery("A", "B"), paragraph("keep"), gallery("C", "D")]);
+    const second = e.state.doc.child(0).nodeSize + e.state.doc.child(1).nodeSize;
+    e.dispatch(e.state.tr.delete(second + 2, second + 3).delete(2, 3));
+    expect(e.state.doc.toJSON()).toEqual(schema.nodes.doc.create(null, [image("A"), paragraph("keep"), image("C")]).toJSON());
   });
 });
