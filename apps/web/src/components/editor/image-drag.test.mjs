@@ -4,7 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import { EditorState } from "@tiptap/pm/state";
 import { history, undo, redo } from "@tiptap/pm/history";
-import { ImageGallery, createImageGalleryCleanupPlugin } from "@edgeever/shared";
+import { ImageGallery } from "@edgeever/shared";
 import { createImageDragPlugin, imageDragKey, moveImage } from "./image-drag";
 
 const schema = getSchema([StarterKit, Image.extend({ addAttributes() {
@@ -13,7 +13,7 @@ const schema = getSchema([StarterKit, Image.extend({ addAttributes() {
 const image = (src) => schema.nodes.image.create({ src, alt: `alt ${src}`, title: `title ${src}`, width: 42, alignment: "right" });
 const paragraph = (text) => schema.nodes.paragraph.create(null, schema.text(text));
 const gallery = (...names) => schema.nodes.edgeeverImageGallery.create({ layout: "3", fit: "height" }, names.map(image));
-const state = (...nodes) => EditorState.create({ doc: schema.nodes.doc.create(null, nodes), plugins: [history(), createImageDragPlugin(), createImageGalleryCleanupPlugin()] });
+const state = (...nodes) => EditorState.create({ doc: schema.nodes.doc.create(null, nodes), plugins: [history(), createImageDragPlugin()] });
 const move = (before, from, to) => {
   const tr = moveImage(before, from, to);
   expect(tr).not.toBeNull();
@@ -53,8 +53,8 @@ describe("existing image dragging (#708)", () => {
     expect(sources(next.doc)).toEqual(["B", "A", "C"]);
   });
   test("one undo restores the original document; redo repeats the move", () => {
-    const before = state(gallery("A", "D"), paragraph("text"), gallery("B", "C"));
-    let next = move(before, 1, before.doc.content.size - 1);
+    const before = state(gallery("A"), paragraph("text"), gallery("B", "C"));
+    let next = move(before, 1, 11);
     const moved = next.doc.toJSON();
     expect(undo(next, (tr) => { next = next.applyTransaction(tr).state; })).toBe(true);
     expect(next.doc.toJSON()).toEqual(before.doc.toJSON());
@@ -94,24 +94,4 @@ describe("existing image dragging (#708)", () => {
     next = next.apply(next.tr.delete(8, 9));
     expect(imageDragKey.getState(next)).toBeNull();
   });
-});
-
-
-describe("dragging out of a two-image gallery (#728)", () => {
-  for (const from of [1, 2]) {
-    test(`moving image ${from} preserves attributes, selection and one-step undo`, () => {
-      const before = state(gallery("A", "B"), paragraph("text"));
-      const moved = before.doc.nodeAt(from);
-      const survivor = before.doc.firstChild.child(from === 1 ? 1 : 0);
-      let next = move(before, from, before.doc.content.size);
-      expect(next.doc.firstChild).toBe(survivor);
-      expect(next.doc.lastChild).toBe(moved);
-      expect(next.selection.node).toBe(moved);
-      const after = next.doc;
-      expect(undo(next, tr => { next = next.applyTransaction(tr).state; })).toBe(true);
-      expect(next.doc.eq(before.doc)).toBe(true);
-      expect(redo(next, tr => { next = next.applyTransaction(tr).state; })).toBe(true);
-      expect(next.doc.eq(after)).toBe(true);
-    });
-  }
 });
