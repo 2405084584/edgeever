@@ -10,7 +10,7 @@
 - 输出保留标题、链接、表格、代码空行及图片 URL，不含导航、导语、下一节、CSS/HTML 隐藏内容和输入框值，见 `browser-captures.json`。
 - 重复启动只保留一个选择器；滚动后边框仍贴合选区，观察到边框 top 为 `-57.4844px`、元素 top 为 `-57.484375px`。
 - 受控保存失败时保留区域并显示错误；挂起保存响应期间连续按 Enter，最终仅保存一次。区域移除或 URL 改变均未写入；悬停后替换 DOM，再点击会选中新的实际目标，不会保存旧元素。
-- 390px 视口、375px 可用宽度下，工具条 x=12–363、宽351、bottom=809，位于高844的视口内，见 `selected-390px.png`；桌面选区及弹窗见 `selected-desktop.png`、`popup.png`。检查中修正了 Shadow DOM 内的平移和宽度计算。
+- 390px 视口（`https://aihot.news/`）下，工具条 x=12–378、宽366、bottom=824，位于高844的视口内（本地夹具 375px 可用宽度下为 x=12–363、宽351、bottom=809），见 `selected-390px.png`；`https://aihot.news/` 上的桌面卡片选区及弹窗入口见 `selected-desktop.png`、`popup.png`。检查中修正了 Shadow DOM 内的平移和宽度计算。
 
 ## 源码与构建检查
 

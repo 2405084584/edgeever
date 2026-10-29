@@ -10,7 +10,7 @@ The actual built popup and `region-clip.js` were exercised in Ego Lite Chromium 
 - Selected output preserved headings, links, a table, code blank lines and the image URL. Navigation, the intro, the next section, CSS/HTML-hidden text and input values were absent from the selected payload. See `browser-captures.json`.
 - Repeated activation left one picker. Scrolling kept the outline at the selected element's rectangle (observed top: `-57.4844px`, element: `-57.484375px`).
 - A controlled save failure retained the region and showed the error. Repeated Enter while the save response was held produced exactly one completed save. Removed regions and changed URLs produced no write. Replacing the hovered DOM before clicking selected the new click target, not the stale element.
-- At a 390px viewport / 375px available width, the toolbar occupied x=12–363, width=351, and bottom=809 inside height=844. See `selected-390px.png`; `selected-desktop.png` and `popup.png` show the other states. Shadow-root translation and sizing were corrected during inspection.
+- At a 390px viewport (`https://aihot.news/`), the toolbar occupied x=12–378, width=366, and bottom=824 inside height=844 (`x=12–363, width=351, bottom=809` at 375px available width on the local fixture). See `selected-390px.png`; `selected-desktop.png` and `popup.png` show the desktop card selection and popup entry on `https://aihot.news/`. Shadow-root translation and sizing were corrected during inspection.
 
 ## Source and build checks
 
