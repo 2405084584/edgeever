@@ -18,7 +18,7 @@ const sameBox = (a: Element, b: Element) => {
 };
 
 const indivisibleChild = (element: Element, parent: Element | null) =>
-  !!parent && ((element.matches("code") && parent.matches("pre"))
+  !!parent && (!!parent.closest("pre")
     || (element.matches("thead,tbody,tfoot,tr,td,th") && parent.matches("table,thead,tbody,tfoot,tr")));
 
 const selectableDirectChild = (parent: Element): HTMLElement | undefined =>
@@ -26,7 +26,10 @@ const selectableDirectChild = (parent: Element): HTMLElement | undefined =>
 
 export const regionWrapper = (element: HTMLElement): HTMLElement => {
   const parent = element.parentElement;
-  if (!parent || element.tagName === "BODY" || !selectableRegion(parent)) return element;
+  if (!parent || element.tagName === "BODY") return element;
+  const pre = parent.closest("pre");
+  if (selectableRegion(pre)) return regionWrapper(pre);
+  if (!selectableRegion(parent)) return element;
   const hasSibling = Array.from(parent.children).some(child => child !== element && selectableRegion(child));
   return indivisibleChild(element, parent) || (sameBox(element, parent) && !hasSibling) ? regionWrapper(parent) : element;
 };
