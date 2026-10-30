@@ -2015,7 +2015,7 @@ export const pl = {
       biweekly: "Co dwa tygodnie",
       monthly: "Co miesiąc"
     },
-    encryption: "Szyfrowanie hasłem",
+    encryption: "Szyfrowanie kopii zapasowej",
     password: "Hasło kopii zapasowej",
     confirmPassword: "Potwierdź hasło",
     passwordSet: "Hasło ustawione",

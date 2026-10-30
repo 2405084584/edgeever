@@ -2015,7 +2015,7 @@ export const ja = {
       biweekly: "2週間ごと",
       monthly: "毎月"
     },
-    encryption: "パスワードで暗号化",
+    encryption: "バックアップ暗号化",
     password: "バックアップのパスワード",
     confirmPassword: "パスワードの確認",
     passwordSet: "パスワード設定済み",

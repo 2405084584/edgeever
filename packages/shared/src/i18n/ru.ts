@@ -2026,7 +2026,7 @@ export const ru = {
       biweekly: "Раз в две недели",
       monthly: "Ежемесячно"
     },
-    encryption: "Шифрование паролем",
+    encryption: "Шифрование резервной копии",
     password: "Пароль резервной копии",
     confirmPassword: "Подтвердите пароль",
     passwordSet: "Пароль задан",

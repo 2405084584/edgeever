@@ -2026,7 +2026,7 @@ export const zhCN = {
       biweekly: "每两周",
       monthly: "每月"
     },
-    encryption: "密码加密",
+    encryption: "备份加密",
     password: "备份密码",
     confirmPassword: "确认密码",
     passwordSet: "已设置密码",

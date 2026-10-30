@@ -2026,7 +2026,7 @@ export const enUS = {
       biweekly: "Every two weeks",
       monthly: "Monthly"
     },
-    encryption: "Password encryption",
+    encryption: "Backup encryption",
     password: "Backup password",
     confirmPassword: "Confirm password",
     passwordSet: "Password set",
