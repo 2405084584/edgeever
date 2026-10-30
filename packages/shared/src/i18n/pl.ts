@@ -2061,6 +2061,8 @@ export const pl = {
     lastCheck: "Ostatnie sprawdzenie: {{time}}",
     notChecked: "Jeszcze nie sprawdzono",
     autoOff: "Automatyczne kopie są wyłączone",
+    savingSettings: "Zapisywanie ustawień kopii…",
+    completePassword: "Wpisz i potwierdź hasło kopii. Ustawienia zapiszą się automatycznie po opuszczeniu pól hasła.",
     deleteTitle: "Usunąć tę kopię?",
     deleteDescription: "Trwale usuń lokalny plik „{{name}}”. Tej czynności nie można cofnąć. Przywrócone notatki pozostaną.",
     deleteConfirm: "Usuń trwale",

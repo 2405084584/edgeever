@@ -2072,6 +2072,8 @@ export const zhCN = {
     lastCheck: "最近检查：{{time}}",
     notChecked: "尚未检查",
     autoOff: "自动备份已关闭",
+    savingSettings: "正在保存备份设置…",
+    completePassword: "请完成并确认备份密码，离开密码输入区域后自动保存。",
     deleteTitle: "删除这份备份？",
     deleteDescription: "将永久删除本地文件“{{name}}”，无法撤销。已恢复的笔记不受影响。",
     deleteConfirm: "永久删除",
